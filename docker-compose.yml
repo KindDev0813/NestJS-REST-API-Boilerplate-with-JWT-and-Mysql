@@ -1,0 +1,45 @@
+version: '2'
+services:
+  app:
+    container_name: ${DOCKER_PROJECT_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    environment:
+      NODE_ENV: dev
+    command: sh -c "yarn install && yarn start"
+    depends_on:
+      - mysqldb
+    links:
+      - mysqldb
+      - redis
+
+  mysqldb:
+    image: mysql
+    container_name: ${DOCKER_PROJECT_NAME}_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file: .env
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 3306:3306
+
+  redis:
+    container_name: ${DOCKER_PROJECT_NAME}_redis_cache
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - rediscache:/data
+volumes:
+  rediscache:

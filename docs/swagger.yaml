@@ -1,0 +1,219 @@
+openapi: 3.0.0
+paths:
+  /user:
+    get:
+      operationId: UsersController_showAllUsers
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UsersDTO"
+      tags:
+        &a1
+        - user
+    post:
+      operationId: UsersController_createUsers
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUsersDTO"
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersDTO"
+        "400":
+          description: ""
+      tags: *a1
+  "/user/{id}":
+    get:
+      operationId: UsersController_readUser
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersDTO"
+        "404":
+          description: ""
+      tags: *a1
+    put:
+      operationId: UsersController_uppdateUser
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUsersDTO"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersDTO"
+      tags: *a1
+    delete:
+      operationId: UsersController_deleteUser
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        "200":
+          description: ""
+      tags: *a1
+  /login:
+    post:
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUsersDTO"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseTokenDTO"
+        "401":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedDTO"
+      tags:
+        - auth
+  /me:
+    get:
+      operationId: AuthController_getMe
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersDTO"
+        "401":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedDTO"
+      security:
+        - bearer: []
+      tags:
+        - profile
+info:
+  title: Skeleton
+  description: Nestjs boilerplate project
+  version: "1.0"
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    UsersDTO:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - id
+        - name
+        - username
+        - password
+    CreateUsersDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - username
+        - password
+    UpdateUsersDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - username
+        - password
+    LoginUsersDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    ResponseTokenDTO:
+      type: object
+      properties:
+        access_token:
+          type: string
+      required:
+        - access_token
+    UnauthorizedDTO:
+      type: object
+      properties:
+        statusCode:
+          type: number
+        message:
+          type: string
+      required:
+        - statusCode
+        - message
